@@ -1,0 +1,1 @@
+sudo pmacctd -P pgsql
