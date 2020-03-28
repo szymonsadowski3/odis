@@ -1,7 +1,7 @@
 
 DEFAULTS = {
     "page": 0,
-    "limit": "ALL",
+    "limit": None,
     "ip_src_in": [],
     "packets_between": [],
     "bytes_between": [],
