@@ -1,0 +1,6 @@
+SELECT * FROM acct
+WHERE
+    (ip_src IN ('172.217.16.130')) AND
+    (packets BETWEEN 0 AND 100) AND
+    (bytes BETWEEN 0 AND 3000) AND
+    (stamp_inserted BETWEEN '2020-03-27 21:02:01.000000' AND '2020-03-27 21:48:02.000000');
