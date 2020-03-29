@@ -4,8 +4,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.rest_api.db.config import DEFAULTS
-
-connection = psycopg2.connect(database="pmacct", user="odis", password="odis", host="127.0.0.1", port="5432")
+from src.rest_api.db.db_configuration import connection
 
 
 def get_all_data():
