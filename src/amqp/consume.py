@@ -1,6 +1,8 @@
 import pika
 import json
 
+from src.amqp.json_to_sql_insert_converter import convert_json_to_sql_insert
+
 EXCHANGE_NAME = 'fanoucik'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
@@ -17,11 +19,11 @@ print(' [*] Waiting for logs. To exit press CTRL+C')
 
 
 def callback(ch, method, properties, body):
-    # b'{"event_type": "purge", "ip_src": "10.0.2.15", "port_src": 37760, "timestamp_start": "2020-04-02 22:40:09.734894", "timestamp_end": "1970-01-01 01:00:00.000000", "packets": 1, "bytes": 40, "writer_id": "default_amqp/28525"}'
     body_decoded = body.decode("utf-8")
     json_parsed = json.loads(body_decoded)
 
-    print(" [x] %r" % body)
+    print(" [x] %r" % json_parsed)
+    print(convert_json_to_sql_insert([json_parsed]))
 
 
 channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
