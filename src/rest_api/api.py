@@ -42,6 +42,26 @@ def accts():
               type: array
               description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69']
               example: ['151.101.129.69']
+            port_src_in:
+              type: array
+              description: Optional array for filtering just for specific ports. For example&#58; ['47718']
+              example: ['47718']
+            port_dst_in:
+              type: array
+              description: Optional array for filtering just for specific ports. For example&#58; ['443']
+              example: ['443']
+            ip_proto_in:
+              type: array
+              description: Optional array for filtering just for specific ip protocols (tcp or udp). For example&#58; ['tcp']
+              example: ['tcp']
+            mac_src_in:
+              type: array
+              description: Optional array for filtering just for specific mac addresses. For example&#58; ['52:54:00:12:35:02']
+              example: ['52:54:00:12:35:02']
+            mac_dst_in:
+              type: array
+              description: Optional array for filtering just for specific mac addresses. For example&#58; ['08:00:27:51:b8:cb']
+              example: ['08:00:27:51:b8:cb']
             packets_between:
               type: array
               description: Optional array for filtering for packets being in specific range. For example&#58; [10, 200] or [200, null] (for no upper limit)
@@ -68,7 +88,12 @@ def accts():
         "ip_dst_in",
         "packets_between",
         "bytes_between",
-        "stamp_between"
+        "stamp_between",
+
+        "port_src_in",
+        "port_dst_in",
+
+        "ip_proto_in",
     ]
 
     kwargs = {arg_name: posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names}
