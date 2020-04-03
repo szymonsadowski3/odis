@@ -2,38 +2,28 @@ def convert_json_to_sql_insert(json_array, table_name='tabb'):
     sqlstatement = "INSERT INTO " + table_name + " "
 
     for index, json_item in enumerate(json_array):
-        if index == 0:
+        is_first_json = index == 0
+        if is_first_json:
             keylist = "("
-            valuelist = "("
-            first_pair = True
-            for key, value in json_item.items():
-                if not first_pair:
+        valuelist = "("
+        first_pair = True
+        for key, value in json_item.items():
+            if not first_pair:
+                if is_first_json:
                     keylist += ", "
-                    valuelist += ", "
-                first_pair = False
+                valuelist += ", "
+            first_pair = False
+            if is_first_json:
                 keylist += key
-                valuelist += "'{}'".format(str(value))
+            valuelist += "'{}'".format(str(value))
 
+        if is_first_json:
             keylist += ")"
-            valuelist += ")"
+        valuelist += ")"
 
+        if is_first_json:
             sqlstatement += keylist + " VALUES "
-            sqlstatement += valuelist + ", "
-        else:
-            valuelist = "("
-            first_pair = True
-            for value in json_item.values():
-                if not first_pair:
-                    valuelist += ", "
-                first_pair = False
-                valuelist += "'{}'".format(str(value))
-
-            valuelist += ")"
-
-            sqlstatement += valuelist + ", "
-
-
-        # sqlstatement += valuelist + "\n"
+        sqlstatement += valuelist + ", "
 
     return sqlstatement[:-2]
 
