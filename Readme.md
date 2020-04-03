@@ -4,7 +4,7 @@ http://localhost:15672
 
 # To run pmacct with RabbitMQ plugin
 
-`sudo pmacctd -P amqp -f rabbit_pmacct_config.cfgw`
+`sudo pmacctd -P amqp -f rabbit_pmacct_config.cfg`
 
 # Aggregate keys configuration
 
