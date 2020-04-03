@@ -12,6 +12,11 @@ CORS(app)
 Swagger(app)
 
 
+@app.route('/version', methods=['GET'])
+def version():
+    return "1.0"
+
+
 @app.route('/accts', methods=['POST'])
 def accts():
     """Returns all data
@@ -31,8 +36,12 @@ def accts():
               example: 10
             ip_src_in:
               type: array
-              description: Optional array for filtering just for specific ips. For example&#58; ['172.217.16.130']
-              example: ['172.217.16.130']
+              description: Optional array for filtering just for specific ips. For example&#58; ['10.0.2.15']
+              example: ['10.0.2.15']
+            ip_dst_in:
+              type: array
+              description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69']
+              example: ['151.101.129.69']
             packets_between:
               type: array
               description: Optional array for filtering for packets being in specific range. For example&#58; [10, 200] or [200, null] (for no upper limit)
@@ -56,16 +65,17 @@ def accts():
         "page",
         "limit",
         "ip_src_in",
+        "ip_dst_in",
         "packets_between",
         "bytes_between",
         "stamp_between"
     ]
 
-    args = [posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names]
+    kwargs = {arg_name: posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names}
 
 
-    return jsonify(get_filtered_data(*args))
+    return jsonify(get_filtered_data(kwargs))
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6000)
+    app.run(host='0.0.0.0', debug=True, port=5001)
