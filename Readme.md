@@ -9,3 +9,9 @@ http://localhost:15672
 # Aggregate keys configuration
 
 https://github.com/pmacct/pmacct/blob/master/CONFIG-KEYS
+
+# Start server
+
+export PYTHONPATH=.
+
+forever -c python3 src/rest_api/api.py
