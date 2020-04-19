@@ -2,7 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.rest_api.db.config import DEFAULTS
-from src.rest_api.db.data_access import get_filtered_data
+from src.rest_api.db.data_access import get_filtered_data, insert_class_of_ips, get_all_classes_of_ips, \
+    get_class_of_ips, delete_class_of_ips, edit_class_of_ips
 from flasgger import Swagger
 
 app = Flask(__name__)
@@ -14,6 +15,112 @@ Swagger(app)
 @app.route('/version', methods=['GET'])
 def version():
     return "1.0"
+
+
+@app.route('/classOfIps', methods=['POST'])
+def define_class_of_ips():
+    """Define class of ips
+        ---
+        parameters:
+          - in: body
+            name: body
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: Name of defined class of ip
+                  example: YouTube
+                ips:
+                  type: array
+                  description: List of ips belonging to defined class
+                  example: ['151.101.129.69', '111.222.222.111']
+        responses:
+          200:
+            description: Ok code
+    """
+    posted_json = request.json
+    class_of_ips_name = posted_json["name"]
+    ips = posted_json["ips"]
+
+    insert_class_of_ips(class_of_ips_name, ips)
+    return "OK"
+
+
+@app.route('/classOfIps', methods=['PUT'])
+def update_class_of_ips_api():
+    """Update class of ips
+        ---
+        parameters:
+          - in: body
+            name: body
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: Name of updated class of ip
+                  example: YouTube
+                ips:
+                  type: array
+                  description: List of new ips belonging to defined class
+                  example: ['111.222.222.111', '111.111.111.111']
+        responses:
+          200:
+            description: Ok code
+    """
+    posted_json = request.json
+    class_of_ips_name = posted_json["name"]
+    ips = posted_json["ips"]
+
+    edit_class_of_ips(class_of_ips_name, ips)
+    return "OK"
+
+
+@app.route('/classOfIps', methods=['GET'])
+def get_class_of_ips_api():
+    """Get class of ips
+        ---
+        parameters:
+          - in: query
+            name: name
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: Optional filter for name of class of ips. If empty then all classes are returned
+                  example: test
+        responses:
+          200:
+            description: List of classes of ip
+    """
+    optional_name = request.args.get('name')
+
+    if optional_name is None:
+        return jsonify(get_all_classes_of_ips())
+    else:
+        return jsonify(get_class_of_ips(optional_name))
+
+
+@app.route('/classOfIps', methods=['DELETE'])
+def remove_class_of_ips():
+    """Delete class of ip
+        ---
+        parameters:
+          - in: body
+            name: body
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: Name of ip class to delete
+                  example: test
+        responses:
+          200:
+            description: Ok code
+    """
+    posted_json = request.json
+    class_of_ips_name = posted_json["name"]
+    delete_class_of_ips(class_of_ips_name)
+    return "OK"
 
 
 @app.route('/accts', methods=['POST'])

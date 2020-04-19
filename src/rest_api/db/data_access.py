@@ -105,9 +105,77 @@ def get_filtered_data(
     return cursor.fetchall()
 
 
+def surround_with_quotes(x, quote="'"):
+    return "{}{}{}".format(quote, x, quote)
+
+
+def list_to_pgarray(alist):
+    list_formatted = [surround_with_quotes(x, '"') for x in alist]
+    return '{{' + ','.join(list_formatted) + '}}'
+
+
+def insert_class_of_ips(name, ips):
+    connection = get_connection()
+    connection.autocommit = True
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = 'insert into class_of_ips(name, ips) values ({name}, {ips})'.format(
+        name=surround_with_quotes(name),
+        ips=surround_with_quotes(list_to_pgarray(ips))
+    )
+    print(query)
+    cursor.execute(query)
+
+
+def delete_class_of_ips(name):
+    connection = get_connection()
+    connection.autocommit = True
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = 'delete from class_of_ips where name = {name}'.format(
+        name=surround_with_quotes(name),
+    )
+    print(query)
+    cursor.execute(query)
+
+
+def edit_class_of_ips(name, ips):
+    connection = get_connection()
+    connection.autocommit = True
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = 'update class_of_ips set ips = {ips} where name = {name}'.format(
+        name=surround_with_quotes(name),
+        ips=surround_with_quotes(list_to_pgarray(ips))
+    )
+    print(query)
+    cursor.execute(query)
+
+
+def get_class_of_ips(name):
+    connection = get_connection()
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = 'select * from class_of_ips where name = {name}'.format(
+        name=surround_with_quotes(name),
+    )
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+def get_all_classes_of_ips():
+    connection = get_connection()
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = 'select * from class_of_ips'
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 if __name__ == '__main__':
     # get_all_data()
     # result = get_all_data_paginated(1, 20)
-    result = get_filtered_data(0, 20, ['172.217.16.130'], [0, None], [0, None], ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'])
-    print(result)
+    # result = get_filtered_data(0, 20, ['172.217.16.130'], [0, None], [0, None], ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'])
+    # print(result)
+
+    # insert_class_of_ips('test', ['111.111.111.111', '222.222.222.222'])
+    # edit_class_of_ips('test', ['311.111.111.111', '442.222.222.222'])
+    # res = get_class_of_ips('test')
+    res = get_all_classes_of_ips()
+    print(res)
     # print(len(result))

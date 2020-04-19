@@ -2,9 +2,10 @@ import pika
 import json
 
 from src.amqp.json_to_sql_insert_converter import convert_json_to_sql_insert
-from src.rest_api.db.db_configuration import connection
+from src.rest_api.db.db_configuration import get_connection
 
 # Set postgres connection for autocommit
+connection = get_connection()
 connection.autocommit = True
 
 
