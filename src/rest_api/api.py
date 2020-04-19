@@ -180,6 +180,10 @@ def accts():
               type: array
               description: Optional array for filtering for timestamps being in specific range. For example&#58; ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'] or ['2020-03-27 21:02:01.000000', null] (for no upper limit)
               example: ['2020-03-27 21:02:01.000000', null]
+            incoming_outgoing_in:
+              type: array
+              description: Optional array for filtering just for specific direction (incoming or outgoing)
+              example: ['incoming']
     responses:
       200:
         description: A list of accts
@@ -200,6 +204,8 @@ def accts():
         "port_dst_in",
 
         "ip_proto_in",
+
+        "incoming_outgoing_in",
     ]
 
     kwargs = {arg_name: posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names}

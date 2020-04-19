@@ -50,7 +50,7 @@ def get_filtered_data(
     conditions = []
     parameters = []
 
-    in_parameters = ['ip_src_in', 'ip_dst_in', 'port_src_in', 'port_dst_in']
+    in_parameters = ['ip_src_in', 'ip_dst_in', 'port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
 
     for in_parameter in in_parameters:
         if not is_parameter_empty(kwargs[in_parameter]):

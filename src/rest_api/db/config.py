@@ -15,4 +15,6 @@ DEFAULTS = {
     "mac_dst_in": [],
 
     "ip_proto_in": [],
+
+    "incoming_outgoing_in": [],
 }
