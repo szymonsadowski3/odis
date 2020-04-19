@@ -53,6 +53,7 @@ def get_filtered_data(
     in_parameters = ['ip_src_in', 'ip_dst_in', 'port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
 
     for in_parameter in in_parameters:
+        print(in_parameter)
         if not is_parameter_empty(kwargs[in_parameter]):
             conditions.append("({} IN %s)".format(in_parameter.replace("_in", "")))
             parameters.append(tuple(kwargs[in_parameter]))
@@ -167,34 +168,7 @@ def get_all_classes_of_ips():
     return cursor.fetchall()
 
 
-def find_continuous_streams(ip_dst_in, time_interval=5):
-    connection = get_connection()
-    cursor = connection.cursor(cursor_factory=RealDictCursor)
-    query = 'SELECT * FROM ip_traffic WHERE ip_dst IN %s ORDER BY timestamp_start;'
-    cursor.execute(query, (tuple(ip_dst_in),))
-    results = cursor.fetchall()
-
-    streams = []
-
-    previous_record = None
-    current_stream = []
-    start_over = False
-
-    for index, record in enumerate(results):
-        if (index == 0) or start_over:
-            current_stream.append(record)
-            continue
-        if (record["timestamp_start"] - previous_record["timestamp_start"]) < '5 min':
-            current_stream.append(record)
-        else:
-            streams.append(current_stream)
-            current_stream = []
-            start_over = True
-
-    return results
-
-
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # get_all_data()
     # result = get_all_data_paginated(1, 20)
     # result = get_filtered_data(0, 20, ['172.217.16.130'], [0, None], [0, None], ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'])
@@ -204,6 +178,6 @@ if __name__ == '__main__':
     # edit_class_of_ips('test', ['311.111.111.111', '442.222.222.222'])
     # res = get_class_of_ips('test')
     # res = get_all_classes_of_ips()
-    res = find_continuous_streams(['TEST'])
-    print(res)
+    # res = find_continuous_streams(['TEST'])
+    # print(res)
     # print(len(result))
