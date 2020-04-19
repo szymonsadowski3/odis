@@ -1,7 +1,9 @@
-from src.rest_api.db.db_configuration import connection
+from src.rest_api.db.db_configuration import get_connection
 
 from dns import resolver
 from dns import reversename
+
+connection = get_connection()
 
 
 def reverse_dns_lookup(ip):
