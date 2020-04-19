@@ -3,3 +3,4 @@ Flask-CORS
 flassger
 psycopg2
 dnspython
+waitress

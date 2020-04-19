@@ -4,14 +4,14 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.rest_api.db.config import DEFAULTS
-from src.rest_api.db.db_configuration import connection
-
+from src.rest_api.db.db_configuration import get_connection
 
 TABLE_NAME = 'ip_traffic'
 TIMESTAMP_COLUMN = 'timestamp_start'
 
 
 def get_all_data():
+    connection = get_connection()
     cursor = connection.cursor(cursor_factory=RealDictCursor)
 
     query = """SELECT * FROM {0};""".format(TABLE_NAME)
@@ -22,6 +22,7 @@ def get_all_data():
 
 
 def get_all_data_paginated(page, limit):
+    connection = get_connection()
     cursor = connection.cursor(cursor_factory=RealDictCursor)
 
     query = """SELECT * FROM {0} OFFSET %s LIMIT %s;""".format(TABLE_NAME)
@@ -43,6 +44,7 @@ def get_filtered_data(
         # page, limit, ip_src_in, ip_dst_in, packets_between, bytes_between, stamp_between
     kwargs
 ):
+    connection = get_connection()
     cursor = connection.cursor(cursor_factory=RealDictCursor)
 
     conditions = []

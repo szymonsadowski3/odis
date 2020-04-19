@@ -1,9 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from playhouse.shortcuts import model_to_dict
 
 from src.rest_api.db.config import DEFAULTS
-from src.rest_api.db.data_access import get_all_data, get_filtered_data
+from src.rest_api.db.data_access import get_filtered_data
 from flasgger import Swagger
 
 app = Flask(__name__)
@@ -103,4 +102,4 @@ def accts():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5000)
