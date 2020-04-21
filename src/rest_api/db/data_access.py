@@ -168,7 +168,22 @@ def get_all_classes_of_ips():
     return cursor.fetchall()
 
 
-# if __name__ == '__main__':
+def get_aggregation_by_day(aggregated_column, aggregate_func):
+    connection = get_connection()
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    query = """SELECT 
+        date_trunc('day', timestamp_start) AS day, 
+        {aggregate_func}({aggregated_column}) AS {aggregated_column}_{aggregate_func}
+        FROM ip_traffic 
+        GROUP BY day;""".format(
+        aggregated_column=aggregated_column,
+        aggregate_func=aggregate_func
+    )
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+if __name__ == '__main__':
     # get_all_data()
     # result = get_all_data_paginated(1, 20)
     # result = get_filtered_data(0, 20, ['172.217.16.130'], [0, None], [0, None], ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'])
@@ -177,7 +192,7 @@ def get_all_classes_of_ips():
     # insert_class_of_ips('test', ['111.111.111.111', '222.222.222.222'])
     # edit_class_of_ips('test', ['311.111.111.111', '442.222.222.222'])
     # res = get_class_of_ips('test')
-    # res = get_all_classes_of_ips()
+    res = get_all_classes_of_ips()
     # res = find_continuous_streams(['TEST'])
-    # print(res)
+    print(res)
     # print(len(result))

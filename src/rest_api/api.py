@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from src.rest_api.db.config import DEFAULTS
 from src.rest_api.db.data_access import get_filtered_data, insert_class_of_ips, get_all_classes_of_ips, \
-    get_class_of_ips, delete_class_of_ips, edit_class_of_ips
+    get_class_of_ips, delete_class_of_ips, edit_class_of_ips, get_aggregation_by_day
 from flasgger import Swagger
 
 from src.rest_api.process.continuous_streams import find_continuous_streams
@@ -20,7 +20,7 @@ def version():
 
 
 @app.route('/classOfIps', methods=['POST'])
-def define_class_of_ips():
+def insert_class_of_ips_api():
     """Define class of ips
         ---
         parameters:
@@ -49,7 +49,7 @@ def define_class_of_ips():
 
 
 @app.route('/classOfIps', methods=['PUT'])
-def update_class_of_ips_api():
+def edit_class_of_ips_api():
     """Update class of ips
         ---
         parameters:
@@ -308,6 +308,34 @@ def accts_streams():
     streams = find_continuous_streams(records)
 
     return jsonify(streams)
+
+
+@app.route('/accts_aggregates', methods=['POST'])
+def accts_aggregates():
+    """Get aggregated ip traffic data
+        ---
+        parameters:
+          - in: body
+            name: body
+            schema:
+              properties:
+                aggregated_column:
+                  type: string
+                  description: Column which will be aggeregated (sumed, counted etc.)
+                  example: bytes
+                aggregate_func:
+                  type: string
+                  description: Name of aggregation function (sum, avg, count etc.)
+                  example: sum
+        responses:
+          200:
+            description: Aggregated results
+    """
+    posted_json = request.json
+    aggregated_column = posted_json["aggregated_column"]
+    aggregate_func = posted_json["aggregate_func"]
+    aggregation_results = get_aggregation_by_day(aggregated_column, aggregate_func)
+    return jsonify(aggregation_results)
 
 
 if __name__ == '__main__':
