@@ -144,11 +144,11 @@ def accts():
               example: 10
             ip_src_in:
               type: array
-              description: Optional array for filtering just for specific ips. For example&#58; ['10.0.2.15']
+              description: Optional array for filtering just for specific ips. For example&#58; ['10.0.2.15'] or just a part of ip ['10.']
               example: ['10.0.2.15']
             ip_dst_in:
               type: array
-              description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69']
+              description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69'] or just a part of ip ['151.1']
               example: ['151.101.129.69']
             port_src_in:
               type: array

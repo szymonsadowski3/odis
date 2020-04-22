@@ -50,7 +50,17 @@ def get_filtered_data(
     conditions = []
     parameters = []
 
-    in_parameters = ['ip_src_in', 'ip_dst_in', 'port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
+    in_parameters = ['port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
+    contain_parameters = ['ip_src_in', 'ip_dst_in']
+
+    for contain_parameter in contain_parameters:
+        if not is_parameter_empty(kwargs[contain_parameter]):
+            conditions.append("({} SIMILAR TO %s)".format(contain_parameter.replace("_in", "")))
+
+            parameter = '%({})%'.format('|'.join(kwargs[contain_parameter]))
+            '%(foo|bar|baz)%'
+
+            parameters.append(parameter)
 
     for in_parameter in in_parameters:
         print(in_parameter)
