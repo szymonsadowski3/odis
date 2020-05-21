@@ -46,11 +46,11 @@ class DataAccessCase(unittest.TestCase):
     def tearDown(self):
         self.connection.close()
 
+    def test_surround_with_quotes(self):
+        self.assertEqual(surround_with_quotes("test"), "'test'")
 
-    def test_get_all_data(self):
-        all_data = get_all_data()
-        self.assertEqual(len(all_data), 500)
-        self.helper_test_ip_traffic_records(all_data)
+    def test_list_to_pgarray(self):
+        self.assertEqual(list_to_pgarray(['test1', 'test2']), '{{"test1","test2"}}')
 
     def helper_test_values_by_dictionary(self, record, test_values_dictionary):
         compared_attributes = [
@@ -84,6 +84,11 @@ class DataAccessCase(unittest.TestCase):
                 self.assertTrue(record_attribute in record)
                 if test_values_dictionary:
                     self.helper_test_values_by_dictionary(record, test_values_dictionary)
+
+    def test_get_all_data(self):
+        all_data = get_all_data()
+        self.assertEqual(len(all_data), 500)
+        self.helper_test_ip_traffic_records(all_data)
 
     def test_get_all_data_paginated(self):
         all_data = get_all_data_paginated(1, 10)
@@ -137,6 +142,24 @@ class DataAccessCase(unittest.TestCase):
         data = get_filtered_data(filtering_request)
         self.assertLessEqual(len(data), 10)
         self.helper_test_ip_traffic_records(data, filtering_request)
+
+    def test_aggregation(self):
+        data = get_aggregation(
+            "bytes",
+            "sum",
+            "day",
+            [
+                "2020-03-27 21:02:01.000000",
+                None
+            ]
+        )
+        self.assertListEqual(
+            data,
+            [
+                RealDictRow([('day', datetime.datetime(2020, 4, 20, 0, 0)), ('bytes_sum', 4042832)]),
+                RealDictRow([('day', datetime.datetime(2020, 4, 25, 0, 0)), ('bytes_sum', 40)]),
+            ]
+        )
 
 
 def main():
