@@ -1,2 +1,0 @@
-livefeed
- Czas spędzony dwa dni temu przez użytkownika wybranego adresu na korzystaniu z serwisu Youtube (zadana klasa adresów IP) – zakładamy. że np. pakiety wysyłane z przerwami mniejszymi niż 5 min na dany adres oznaczają ciągłość korzystania.

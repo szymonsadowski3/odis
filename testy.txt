@@ -1,0 +1,7 @@
+Statyczna analiza kodu
+Unit testy serwisu Rest
+Unit testy w aplikacji webowej
+Testy wydajnościowe (m. in. symulowanie bardzo dużego ruchu internetowego, żeby sprawdzić, czy aplikacja nie gubi jakichś danych)
+Testy automatyczne aplikacji webowej
+Testy end-to-end całego systemu
+Testy i audyt bezpieczeństwa
