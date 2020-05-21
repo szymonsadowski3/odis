@@ -49,7 +49,28 @@ class DataAccessCase(unittest.TestCase):
 
     def test_get_all_data(self):
         all_data = get_all_data()
-        self.assertEquals(len(all_data), 500)
+        self.assertEqual(len(all_data), 500)
+        for record in all_data:
+            record_attributes = [
+                'event_type',
+                'ip_src',
+                'ip_dst',
+                'port_src',
+                'port_dst',
+                'timestamp_start',
+                'timestamp_end',
+                'packets',
+                'bytes',
+                'writer_id',
+                'mac_src',
+                'mac_dst',
+                'ip_proto',
+                'src_hostname',
+                'dst_hostname',
+                'incoming_outgoing',
+            ]
+            for record_attribute in record_attributes:
+                self.assertTrue(record_attribute in record)
 
 
 def main():
