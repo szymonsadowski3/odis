@@ -327,6 +327,15 @@ def accts_aggregates():
                   type: string
                   description: Name of aggregation function (sum, avg, count etc.)
                   example: sum
+                aggregate_part:
+                  type: string
+                  description: How results should be grouped (defaults to 'day', but should be one of: millennium
+                  century decade year quarter month week day hour minute second milliseconds microseconds
+                  (see more at: https://www.postgresql.org/docs/9.1/functions-datetime.html)
+                stamp_between:
+                  type: array
+                  description: Optional array for filtering for timestamps being in specific range. For example&#58; ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'] or ['2020-03-27 21:02:01.000000', null] (for no upper limit)
+                  example: ['2020-03-27 21:02:01.000000', null]
         responses:
           200:
             description: Aggregated results

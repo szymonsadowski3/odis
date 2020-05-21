@@ -41,7 +41,6 @@ def is_parameter_empty(filter_param):
 
 
 def get_filtered_data(
-        # page, limit, ip_src_in, ip_dst_in, packets_between, bytes_between, stamp_between
     kwargs
 ):
     connection = get_connection()
