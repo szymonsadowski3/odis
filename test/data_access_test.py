@@ -37,6 +37,14 @@ class DataAccessCase(unittest.TestCase):
                     incoming_outgoing varchar(255)
                 );
         """)
+        self.cursor.execute("DROP TABLE IF EXISTS class_of_ips;")
+        self.cursor.execute("""
+                create table class_of_ips
+                (
+                    name varchar(255),
+                    ips text[]
+                );
+        """)
         with open("test_data/ip_traffic_test_data.sql") as file_in:
             for line in file_in:
                 self.cursor.execute(line)
@@ -51,6 +59,15 @@ class DataAccessCase(unittest.TestCase):
 
     def test_list_to_pgarray(self):
         self.assertEqual(list_to_pgarray(['test1', 'test2']), '{{"test1","test2"}}')
+
+    def test_is_array_empty(self):
+        self.assertEqual(is_array_empty([]), True)
+        self.assertEqual(is_array_empty(['a']), False)
+
+    def test_is_parameter_empty(self):
+        self.assertEqual(is_parameter_empty([]), True)
+        self.assertEqual(is_parameter_empty(None), True)
+        self.assertEqual(is_parameter_empty('a'), False)
 
     def helper_test_values_by_dictionary(self, record, test_values_dictionary):
         compared_attributes = [
@@ -95,14 +112,35 @@ class DataAccessCase(unittest.TestCase):
         self.assertEqual(len(all_data), 10)
         self.helper_test_ip_traffic_records(all_data)
 
-    def test_is_array_empty(self):
-        self.assertEqual(is_array_empty([]), True)
-        self.assertEqual(is_array_empty(['a']), False)
+    def test_insert_class_of_ips(self):
+        insert_class_of_ips("test", ["0.0.0.0"])
+        classes = get_all_classes_of_ips()
+        self.assertGreater(len(classes), 0)
+        self.assertEqual(classes[0]['name'], 'test')
 
-    def test_is_parameter_empty(self):
-        self.assertEqual(is_parameter_empty([]), True)
-        self.assertEqual(is_parameter_empty(None), True)
-        self.assertEqual(is_parameter_empty('a'), False)
+    def test_delete_class_of_ips(self):
+        insert_class_of_ips("test", ["0.0.0.0"])
+        len_before = len(get_all_classes_of_ips())
+        delete_class_of_ips("test")
+        len_after = len(get_all_classes_of_ips())
+        self.assertEquals(len_before-1, len_after)
+
+    def test_get_class_of_ips(self):
+        insert_class_of_ips("test", ["0.0.0.0"])
+        ipclass = get_class_of_ips("test")
+        self.assertEqual(ipclass, [RealDictRow([('name', 'test'), ('ips', [['0.0.0.0']])])])
+
+    def test_edit_class_of_ips(self):
+        insert_class_of_ips("test", ["0.0.0.0"])
+        edit_class_of_ips("test", ["1.1.1.1"])
+        classes = get_all_classes_of_ips()
+        self.assertListEqual(classes[0]['ips'], [["1.1.1.1"]])
+
+    def test_get_all_classes_of_ips(self):
+        insert_class_of_ips("test", ["0.0.0.0"])
+        classes = get_all_classes_of_ips()
+        self.assertGreater(len(classes), 0)
+        self.assertEqual(classes[0]['name'], 'test')
 
     def test_get_filtered_data(self):
         filtering_request = {
