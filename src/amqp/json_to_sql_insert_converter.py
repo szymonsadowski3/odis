@@ -1,6 +1,8 @@
 def convert_json_to_sql_insert(json_array, table_name='tabb'):
     sqlstatement = "INSERT INTO " + table_name + " "
 
+    keylist = ""
+
     for index, json_item in enumerate(json_array):
         is_first_json = index == 0
         if is_first_json:

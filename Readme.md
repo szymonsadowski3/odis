@@ -62,3 +62,7 @@ http://localhost:15672
 ## Uruchomienie testów jednostkowych
 
 python3 -m unittest test/*_test.py
+
+## Uruchomienie statycznej analizy kodu
+
+W Intellij -> "Analyze" -> "Inspect code" -> "Whole project"

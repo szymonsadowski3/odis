@@ -23,6 +23,7 @@ channel.queue_bind(exchange=EXCHANGE_NAME, queue=queue_name)
 
 
 def callback(ch, method, properties, body):
+    print("received callback {} {} {}", ch, method, properties)
     body_decoded = body.decode("utf-8")
     json_parsed = json.loads(body_decoded)
 

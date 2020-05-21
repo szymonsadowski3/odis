@@ -1,6 +1,3 @@
-import json
-
-import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.rest_api.db.config import DEFAULTS
