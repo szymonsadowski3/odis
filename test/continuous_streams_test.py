@@ -6,7 +6,7 @@ from src.rest_api.process.continuous_streams import find_continuous_streams
 from test.test_data.data import database_ip_traffic_records, streams_to_find
 
 
-class LearningCase(unittest.TestCase):
+class ContinuousStreamsCase(unittest.TestCase):
     def test_continuous_streams_finding(self):
 
 
