@@ -2,8 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.rest_api.db.config import DEFAULTS
-from src.rest_api.db.data_access import get_filtered_data, insert_class_of_ips, get_all_classes_of_ips, \
-    get_class_of_ips, delete_class_of_ips, edit_class_of_ips, get_aggregation
+from src.rest_api.db.data_access import (get_filtered_data, insert_class_of_ips, get_all_classes_of_ips,
+                                         get_class_of_ips, delete_class_of_ips, edit_class_of_ips, get_aggregation)
 from flasgger import Swagger
 
 from src.rest_api.process.continuous_streams import find_continuous_streams
@@ -211,7 +211,6 @@ def accts():
     ]
 
     kwargs = {arg_name: posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names}
-
 
     return jsonify(get_filtered_data(kwargs))
 

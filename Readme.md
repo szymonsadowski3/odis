@@ -54,7 +54,11 @@ python3 src/rest_api/waitress_serve.py
 Po uruchomieniu serwisu pod endpointem /apidocs można uruchomić dokumentację "Swagger" serwisu.
 Np. po uruchomieniu na localhoscie: http://localhost:5000/apidocs/
 
-# Panel administratora RabbitMQ
+## Panel administratora RabbitMQ
 
 Panel administratora RabbitMQ domyślnie uruchomiony jest pod portem 15672 np.:
 http://localhost:15672
+
+## Uruchomienie testów
+
+python3 -m unittest test/*_test.py
