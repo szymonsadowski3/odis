@@ -3,7 +3,7 @@ import os
 import unittest
 from psycopg2.extras import RealDictRow
 
-from src.rest_api.db.data_access import get_all_data
+from src.rest_api.db.data_access import *
 from src.rest_api.db.db_configuration import get_connection
 
 
@@ -50,6 +50,17 @@ class DataAccessCase(unittest.TestCase):
     def test_get_all_data(self):
         all_data = get_all_data()
         self.assertEqual(len(all_data), 500)
+        self.helper_test_ip_traffic_records(all_data)
+
+    def helper_test_values_by_dictionary(self, record, test_values_dictionary):
+        compared_attributes = [
+            'port_src', 'port_dst',
+            'ip_src', 'ip_dst'
+        ]
+        for compared_attribute in compared_attributes:
+            self.assertEqual(record[compared_attribute], test_values_dictionary["{}_in".format(compared_attribute)][0])
+
+    def helper_test_ip_traffic_records(self, all_data, test_values_dictionary=None):
         for record in all_data:
             record_attributes = [
                 'event_type',
@@ -71,6 +82,61 @@ class DataAccessCase(unittest.TestCase):
             ]
             for record_attribute in record_attributes:
                 self.assertTrue(record_attribute in record)
+                if test_values_dictionary:
+                    self.helper_test_values_by_dictionary(record, test_values_dictionary)
+
+    def test_get_all_data_paginated(self):
+        all_data = get_all_data_paginated(1, 10)
+        self.assertEqual(len(all_data), 10)
+        self.helper_test_ip_traffic_records(all_data)
+
+    def test_is_array_empty(self):
+        self.assertEqual(is_array_empty([]), True)
+        self.assertEqual(is_array_empty(['a']), False)
+
+    def test_is_parameter_empty(self):
+        self.assertEqual(is_parameter_empty([]), True)
+        self.assertEqual(is_parameter_empty(None), True)
+        self.assertEqual(is_parameter_empty('a'), False)
+
+    def test_get_filtered_data(self):
+        filtering_request = {
+            "bytes_between": [
+                2000,
+                None
+            ],
+            "incoming_outgoing_in": [
+                "incoming"
+            ],
+            "ip_dst_in": [
+                "10.0.2.15"
+            ],
+            "ip_proto_in": [
+                "tcp"
+            ],
+            "ip_src_in": [
+                "173.194.188.231"
+            ],
+            "limit": 10,
+            "packets_between": [
+                0,
+                2
+            ],
+            "page": 0,
+            "port_dst_in": [
+                "42294"
+            ],
+            "port_src_in": [
+                "443"
+            ],
+            "stamp_between": [
+                "2020-03-27 21:02:01.000000",
+                None
+            ]
+        }
+        data = get_filtered_data(filtering_request)
+        self.assertLessEqual(len(data), 10)
+        self.helper_test_ip_traffic_records(data, filtering_request)
 
 
 def main():
