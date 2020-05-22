@@ -4,3 +4,4 @@ flassger
 psycopg2
 dnspython
 waitress
+simplejson

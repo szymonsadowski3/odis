@@ -66,3 +66,12 @@ python3 -m unittest test/*_test.py
 ## Uruchomienie statycznej analizy kodu
 
 W Intellij -> "Analyze" -> "Inspect code" -> "Whole project"
+
+
+## Uruchomienie testów wydajności
+
+1. W jednym oknie uruchomić consumer.py `python3 test/performance/consumer.py`
+2. Poczekać na zakończenie set upu
+3. W drugim oknie uruchomić publisher.py `python3 test/performance/publisher.py`
+4. Poczekać aż w pierwszym oknie zostaną skonsumowane wiadomości z kolejki
+5. Gdy zakończą się pojawiać komunikaty przeprowadzić asercję -> `python3 test/performance/assert.py`

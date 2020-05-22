@@ -1,1 +1,1 @@
-sudo pmacctd -P pgsql
+sudo pmacctd -P amqp -f amqp_plugin_config.cfg
