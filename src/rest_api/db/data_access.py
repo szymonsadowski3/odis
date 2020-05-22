@@ -187,11 +187,11 @@ def get_aggregation(aggregated_column, aggregate_func, aggregate_part, stamp_bet
     connection = get_connection()
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     query = """SELECT 
-        date_trunc('{aggregate_part}', timestamp_start) AS {aggregate_part}, 
-        {aggregate_func}({aggregated_column}) AS {aggregated_column}_{aggregate_func}
+        date_trunc('{aggregate_part}', timestamp_start) AS label, 
+        {aggregate_func}({aggregated_column}) AS value
         FROM ip_traffic 
         {where_condition}
-        GROUP BY {aggregate_part};""".format(
+        GROUP BY label;""".format(
         aggregated_column=aggregated_column,
         aggregate_func=aggregate_func,
         aggregate_part=aggregate_part,

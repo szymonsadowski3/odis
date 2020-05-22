@@ -5,7 +5,7 @@ import psycopg2
 
 from src.rest_api.db.secrets import MASTER_PASS
 
-env = "local"
+env = "prod"
 
 
 def get_connection():

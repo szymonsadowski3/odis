@@ -194,8 +194,8 @@ class DataAccessCase(unittest.TestCase):
         self.assertListEqual(
             data,
             [
-                RealDictRow([('day', datetime.datetime(2020, 4, 20, 0, 0)), ('bytes_sum', 4042832)]),
-                RealDictRow([('day', datetime.datetime(2020, 4, 25, 0, 0)), ('bytes_sum', 40)]),
+                RealDictRow([('label', datetime.datetime(2020, 4, 20, 0, 0)), ('value', 4042832)]),
+                RealDictRow([('label', datetime.datetime(2020, 4, 25, 0, 0)), ('value', 40)]),
             ]
         )
 
