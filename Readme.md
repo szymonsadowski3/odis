@@ -2,7 +2,7 @@
 
 ## Architektura projektu 
 
-![alt text](https://github.com/szymonsadowski3/odis/doc/img/diagram.png "Architecture diagram")
+![alt text](https://github.com/szymonsadowski3/odis/blob/master/doc/img/diagram.png "Architecture diagram")
 
 ## Zależności systemowe
 
