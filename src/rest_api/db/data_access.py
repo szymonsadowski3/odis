@@ -1,6 +1,3 @@
-import json
-
-import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from src.rest_api.db.config import DEFAULTS
@@ -41,7 +38,6 @@ def is_parameter_empty(filter_param):
 
 
 def get_filtered_data(
-        # page, limit, ip_src_in, ip_dst_in, packets_between, bytes_between, stamp_between
     kwargs
 ):
     connection = get_connection()
@@ -50,7 +46,17 @@ def get_filtered_data(
     conditions = []
     parameters = []
 
-    in_parameters = ['ip_src_in', 'ip_dst_in', 'port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
+    in_parameters = ['port_src_in', 'port_dst_in', 'ip_proto_in', 'incoming_outgoing_in']
+    contain_parameters = ['ip_src_in', 'ip_dst_in']
+
+    for contain_parameter in contain_parameters:
+        if not is_parameter_empty(kwargs[contain_parameter]):
+            conditions.append("({} SIMILAR TO %s)".format(contain_parameter.replace("_in", "")))
+
+            parameter = '%({})%'.format('|'.join(kwargs[contain_parameter]))
+            '%(foo|bar|baz)%'
+
+            parameters.append(parameter)
 
     for in_parameter in in_parameters:
         print(in_parameter)
@@ -168,18 +174,30 @@ def get_all_classes_of_ips():
     return cursor.fetchall()
 
 
-def get_aggregation_by_day(aggregated_column, aggregate_func):
+def get_aggregation(aggregated_column, aggregate_func, aggregate_part, stamp_between):
+    where_condition = ""
+    query_parameters = []
+
+    if not is_parameter_empty(stamp_between):
+        where_condition = "WHERE ({} BETWEEN %s AND %s)".format(TIMESTAMP_COLUMN)
+        query_parameters.append(stamp_between[0])
+        query_parameters.append(stamp_between[1] if stamp_between[1] is not None else "'9999-03-27 21:48:02.000000'")
+
+
     connection = get_connection()
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     query = """SELECT 
-        date_trunc('day', timestamp_start) AS day, 
-        {aggregate_func}({aggregated_column}) AS {aggregated_column}_{aggregate_func}
+        date_trunc('{aggregate_part}', timestamp_start) AS label, 
+        {aggregate_func}({aggregated_column}) AS value
         FROM ip_traffic 
-        GROUP BY day;""".format(
+        {where_condition}
+        GROUP BY label;""".format(
         aggregated_column=aggregated_column,
-        aggregate_func=aggregate_func
+        aggregate_func=aggregate_func,
+        aggregate_part=aggregate_part,
+        where_condition=where_condition
     )
-    cursor.execute(query)
+    cursor.execute(query, tuple(query_parameters))
     return cursor.fetchall()
 
 

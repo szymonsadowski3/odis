@@ -1,0 +1,1 @@
+TEST_IP_TRAFFIC_BODY = b'{"event_type": "purge", "mac_src": "08:00:27:51:b8:cb", "mac_dst": "52:54:00:12:35:02", "ip_src": "10.0.2.15", "ip_dst": "172.217.23.99", "port_src": 37306, "port_dst": 443, "ip_proto": "tcp", "timestamp_start": "2020-05-22 21:00:31.578200", "timestamp_end": "1970-01-01 01:00:00.000000", "packets": 1, "bytes": 123, "writer_id": "default_amqp/24133"}'

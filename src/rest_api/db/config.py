@@ -17,4 +17,8 @@ DEFAULTS = {
     "ip_proto_in": [],
 
     "incoming_outgoing_in": [],
+
+    "aggregated_column": "bytes",
+    "aggregate_func": "sum",
+    "aggregate_part": "day"
 }

@@ -4,7 +4,7 @@ create table ip_traffic
 	ip_src varchar(255),
 	ip_dst varchar(255),
 	port_src varchar(255),
-	port_dst integer,
+	port_dst varchar(255),
 	timestamp_start timestamp,
 	timestamp_end timestamp,
 	packets integer,
@@ -14,8 +14,12 @@ create table ip_traffic
 	mac_dst varchar(255),
 	ip_proto varchar(255),
 	src_hostname varchar(255),
-	dst_hostname varchar(255)
+	dst_hostname varchar(255),
+	incoming_outgoing varchar(255)
 );
 
-alter table ip_traffic owner to odis;
-
+create table class_of_ips
+(
+	name varchar(255),
+	ips text[]
+);

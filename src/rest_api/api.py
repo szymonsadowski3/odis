@@ -2,8 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from src.rest_api.db.config import DEFAULTS
-from src.rest_api.db.data_access import get_filtered_data, insert_class_of_ips, get_all_classes_of_ips, \
-    get_class_of_ips, delete_class_of_ips, edit_class_of_ips, get_aggregation_by_day
+from src.rest_api.db.data_access import (get_filtered_data, insert_class_of_ips, get_all_classes_of_ips,
+                                         get_class_of_ips, delete_class_of_ips, edit_class_of_ips, get_aggregation)
 from flasgger import Swagger
 
 from src.rest_api.process.continuous_streams import find_continuous_streams
@@ -144,11 +144,11 @@ def accts():
               example: 10
             ip_src_in:
               type: array
-              description: Optional array for filtering just for specific ips. For example&#58; ['10.0.2.15']
+              description: Optional array for filtering just for specific ips. For example&#58; ['10.0.2.15'] or just a part of ip ['10.']
               example: ['10.0.2.15']
             ip_dst_in:
               type: array
-              description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69']
+              description: Optional array for filtering just for specific ips. For example&#58; ['151.101.129.69'] or just a part of ip ['151.1']
               example: ['151.101.129.69']
             port_src_in:
               type: array
@@ -211,7 +211,6 @@ def accts():
     ]
 
     kwargs = {arg_name: posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names}
-
 
     return jsonify(get_filtered_data(kwargs))
 
@@ -327,14 +326,25 @@ def accts_aggregates():
                   type: string
                   description: Name of aggregation function (sum, avg, count etc.)
                   example: sum
+                aggregate_part:
+                  type: string
+                  description: How results should be grouped (defaults to 'day', but should be one of&#58; millennium century decade year quarter month week day hour minute second milliseconds microseconds (see more at&#58; https://www.postgresql.org/docs/9.1/functions-datetime.html)
+                  example: day
+                stamp_between:
+                  type: array
+                  description: Optional array for filtering for timestamps being in specific range. For example&#58; ['2020-03-27 21:02:01.000000', '2020-03-27 21:48:02.000000'] or ['2020-03-27 21:02:01.000000', null] (for no upper limit)
+                  example: ['2020-03-27 21:02:01.000000', null]
         responses:
           200:
-            description: Aggregated results
+            description: Aggregated results. When using for example week or month in aggregate_part in the response key indicated the start of period (e. g. "Wed, 01 Apr 2020 00&#58;00&#58;00 GMT" means whole April month)
     """
     posted_json = request.json
-    aggregated_column = posted_json["aggregated_column"]
-    aggregate_func = posted_json["aggregate_func"]
-    aggregation_results = get_aggregation_by_day(aggregated_column, aggregate_func)
+
+    arg_names = ["aggregated_column", "aggregate_func", "aggregate_part", "stamp_between"]
+
+    parameter_values = [posted_json.get(arg_name, DEFAULTS[arg_name]) for arg_name in arg_names]
+
+    aggregation_results = get_aggregation(*parameter_values)
     return jsonify(aggregation_results)
 
 

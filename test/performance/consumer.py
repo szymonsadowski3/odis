@@ -3,6 +3,42 @@ import json
 
 from src.amqp.json_to_sql_insert_converter import convert_json_to_sql_insert
 from src.rest_api.db.db_configuration import get_connection
+import os
+
+
+def set_up():
+    os.environ['IS_TEST'] = 'True'
+    print("setting up database stuff...")
+    connection = get_connection()
+    connection.autocommit = True
+    global db_cursor
+    db_cursor = connection.cursor()
+    cursor = db_cursor
+    cursor.execute("CREATE SCHEMA IF NOT EXISTS test")
+    cursor.execute("SET search_path TO test")
+    cursor.execute("DROP TABLE IF EXISTS ip_traffic;")
+    cursor.execute("""
+            create table ip_traffic
+            (
+                event_type varchar(255),
+                ip_src varchar(255),
+                ip_dst varchar(255),
+                port_src varchar(255),
+                port_dst varchar(255),
+                timestamp_start timestamp,
+                timestamp_end timestamp,
+                packets integer,
+                bytes integer,
+                writer_id varchar(255),
+                mac_src varchar(255),
+                mac_dst varchar(255),
+                ip_proto varchar(255),
+                src_hostname varchar(255),
+                dst_hostname varchar(255),
+                incoming_outgoing varchar(255)
+            );
+    """)
+    print("Finished setup!")
 
 
 def consume_rabbit_data_callback(ch, method, properties, body):
@@ -21,7 +57,7 @@ def main():
     connection = get_connection()
     connection.autocommit = True
 
-    EXCHANGE_NAME = 'fanoucik'
+    EXCHANGE_NAME = 'test'
 
     queue_connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = queue_connection.channel()
@@ -39,9 +75,9 @@ def main():
 
 
 if __name__ == "__main__":
+    os.environ['IS_TEST'] = 'True'
+    set_up()
     connection = get_connection()
     connection.autocommit = True
     db_cursor = connection.cursor()
     main()
-
-
